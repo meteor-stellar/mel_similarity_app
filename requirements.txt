@@ -56,6 +56,9 @@ pygubu-designer==0.39.3
 pyinstaller==5.10.1
 pyinstaller-hooks-contrib==2023.2
 PyMsgBox==1.0.9
+pyobjc-core==10.0
+pyobjc-framework-Cocoa==10.0
+pyobjc-framework-Quartz==10.0
 pyparsing==3.1.0
 pyperclip==1.8.2
 PyRect==0.2.0
