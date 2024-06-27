@@ -1,11 +1,12 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash
+from werkzeug.utils import secure_filename
 import librosa
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
 app = Flask(__name__)
-app.secret_key = 'Applerin1101'
+app.secret_key = 'your_secret_key'
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'mp3', 'wav'}
@@ -18,26 +19,35 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload_files():
-    if request.method == 'POST':
-        file1 = request.files['file1']
-        file2 = request.files['file2']
+    try:
+        if request.method == 'POST':
+            file1 = request.files['file1']
+            file2 = request.files['file2']
 
-        if file1 and allowed_file(file1.filename) and file2 and allowed_file(file2.filename):
-            filename1 = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(file1.filename))
-            filename2 = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(file2.filename))
-            file1.save(filename1)
-            file2.save(filename2)
-            
-            similarity = calculate_similarity(filename1, filename2)
-            return redirect(url_for('result', similarity=similarity))
-        else:
-            flash('ファイルが選択されていないか、サポートされていない形式です。再度選択してください。')
-            return redirect(url_for('index'))
+            if file1 and allowed_file(file1.filename) and file2 and allowed_file(file2.filename):
+                filename1 = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(file1.filename))
+                filename2 = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(file2.filename))
+                file1.save(filename1)
+                file2.save(filename2)
+                
+                # Calculate similarity
+                similarity = calculate_similarity(filename1, filename2)
+                return redirect(url_for('result', similarity=similarity))
+            else:
+                flash('ファイルが選択されていないか、サポートされていない形式です。再度選択してください。')
+                return redirect(url_for('index'))
+    except Exception as e:
+        app.logger.error(f"Error processing upload: {e}")
+        return render_template('error.html', error=str(e))
 
 @app.route('/result')
 def result():
-    similarity = request.args.get('similarity', type=float)
-    return render_template('result.html', similarity=similarity)
+    try:
+        similarity = request.args.get('similarity', type=float)
+        return render_template('result.html', similarity=similarity)
+    except Exception as e:
+        app.logger.error(f"Error rendering result: {e}")
+        return render_template('error.html', error=str(e))
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
