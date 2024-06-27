@@ -1,9 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
 import os
-from werkzeug.utils import secure_filename
+from flask import Flask, render_template, request, redirect, url_for, flash
 import librosa
-import librosa.display
-import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -31,7 +28,6 @@ def upload_files():
             file1.save(filename1)
             file2.save(filename2)
             
-            # Calculate similarity
             similarity = calculate_similarity(filename1, filename2)
             return redirect(url_for('result', similarity=similarity))
         else:
@@ -60,4 +56,5 @@ def calculate_similarity(file_path1, file_path2):
     return similarity
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=True, host='0.0.0.0', port=port)
