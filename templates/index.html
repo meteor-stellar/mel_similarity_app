@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音声類似性比較ツール</title>
+</head>
+<body>
+    <h1>音声類似性比較ツール</h1>
+    <form method="post" action="/upload" enctype="multipart/form-data">
+        <label>1つ目の音声ファイルを選択してください:</label><br>
+        <input type="file" name="file1" accept=".mp3, .wav"><br><br>
+        <label>2つ目の音声ファイルを選択してください:</label><br>
+        <input type="file" name="file2" accept=".mp3, .wav"><br><br>
+        <input type="submit" value="類似度を計算">
+    </form>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+</body>
+</html>
