@@ -32,7 +32,12 @@ def upload_files():
     similarity = calculate_similarity(filename1, filename2)
     return render_template('result.html', similarity=similarity)
 
+def delayed_imports():
+    global numba
+    import numba
+
 def calculate_similarity(file_path1, file_path2):
+    delayed_imports()  # ここで numba をインポート
     y1, sr1 = librosa.load(file_path1, sr=22050, mono=True)  # デフォルトのサンプリングレートを使用し、モノラルに変換
     y2, sr2 = librosa.load(file_path2, sr=22050, mono=True)
 
