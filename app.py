@@ -33,8 +33,8 @@ def upload_files():
     return render_template('result.html', similarity=similarity)
 
 def calculate_similarity(file_path1, file_path2):
-    y1, sr1 = librosa.load(file_path1)
-    y2, sr2 = librosa.load(file_path2)
+    y1, sr1 = librosa.load(file_path1, sr=22050, mono=True)  # デフォルトのサンプリングレートを使用し、モノラルに変換
+    y2, sr2 = librosa.load(file_path2, sr=22050, mono=True)
 
     mfcc1 = librosa.feature.mfcc(y=y1, sr=sr1, n_mfcc=13)
     mfcc2 = librosa.feature.mfcc(y=y2, sr=sr2, n_mfcc=13)
@@ -44,6 +44,7 @@ def calculate_similarity(file_path1, file_path2):
 
     similarity = np.dot(mfcc1_mean, mfcc2_mean) / (np.linalg.norm(mfcc1_mean) * np.linalg.norm(mfcc2_mean))
     return similarity * 100  # パーセント表記に変換
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)
