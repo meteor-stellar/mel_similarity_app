@@ -43,7 +43,7 @@ def calculate_similarity(file_path1, file_path2):
     mfcc2_mean = np.mean(mfcc2, axis=1)
 
     similarity = np.dot(mfcc1_mean, mfcc2_mean) / (np.linalg.norm(mfcc1_mean) * np.linalg.norm(mfcc2_mean))
-    return similarity
+    return similarity * 100  # パーセント表記に変換
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)
